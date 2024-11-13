@@ -1,90 +1,20 @@
 import React from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const RegionalDashboard = () => {
-  // Final color palette
-  const colors = {
-    background: '#FFFFFF',  // White Background
-    text: '#333333',       // Dark Text
-    chart: {
-      UCAN: '#073763',     // Deep Blue
-      EMEA: '#ffd966',     // Gold
-      LATAM: '#6aa84f',    // Green
-      APAC: '#cc0000'      // Red
-    }
-  };
+const Dashboard = () => {
+  const [data, setData] = useState([]);
 
-  const revenueData = [
-    {
-      quarter: 'Q1\'24',
-      UCAN: 4224,
-      EMEA: 2958,
-      LATAM: 1165,
-      APAC: 1023,
-    },
-    {
-      quarter: 'Q2\'24',
-      UCAN: 4296,
-      EMEA: 3008,
-      LATAM: 1204,
-      APAC: 1052,
-    },
-    {
-      quarter: 'Q3\'24',
-      UCAN: 4322,
-      EMEA: 3133,
-      LATAM: 1241,
-      APAC: 1128,
-    },
-  ];
-
-  const membershipData = [
-    {
-      quarter: 'Q1\'24',
-      UCAN: 82.66,
-      EMEA: 91.73,
-      LATAM: 47.72,
-      APAC: 47.50,
-    },
-    {
-      quarter: 'Q2\'24',
-      UCAN: 84.11,
-      EMEA: 93.96,
-      LATAM: 49.25,
-      APAC: 50.32,
-    },
-    {
-      quarter: 'Q3\'24',
-      UCAN: 84.80,
-      EMEA: 96.13,
-      LATAM: 49.18,
-      APAC: 52.60,
-    },
-  ];
-
-  const arpmData = [
-    {
-      quarter: 'Q1\'24',
-      UCAN: 17.30,
-      EMEA: 10.92,
-      LATAM: 8.29,
-      APAC: 7.35,
-    },
-    {
-      quarter: 'Q2\'24',
-      UCAN: 17.17,
-      EMEA: 10.80,
-      LATAM: 8.28,
-      APAC: 7.17,
-    },
-    {
-      quarter: 'Q3\'24',
-      UCAN: 17.06,
-      EMEA: 10.99,
-      LATAM: 8.40,
-      APAC: 7.31,
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await axios.get('https://raw.githubusercontent.com/bethCoderNewbie/netflix-finratio-dashboard/main/src/data/financialData.json');
+        setData(result.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
