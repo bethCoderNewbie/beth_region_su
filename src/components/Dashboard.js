@@ -1,7 +1,6 @@
 import React from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-// Import your data directly
 const dashboardData = {
   "revenueData": [
     {
@@ -74,13 +73,19 @@ const dashboardData = {
   ]
 };
 
+// Colors for the regions
+const colors = {
+  UCAN: '#073763',
+  EMEA: '#ffd966',
+  LATAM: '#6aa84f',
+  APAC: '#cc0000'
+};
+
 const ChartCard = ({ title, children }) => (
-  <div className="p-6 bg-white rounded-lg shadow-lg">
+  <div className="min-h-[400px] w-full p-6 mb-8 bg-white rounded-lg shadow-lg">
     <h2 className="text-2xl font-bold mb-6 text-gray-900">{title}</h2>
-    <div className="h-72">
-      <ResponsiveContainer width="100%" height="100%">
-        {children}
-      </ResponsiveContainer>
+    <div className="h-[300px] w-full">
+      {children}
     </div>
   </div>
 );
@@ -102,71 +107,69 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const RegionalDashboard = () => {
-  // Color palette
-  const colors = {
-    UCAN: '#073763',
-    EMEA: '#ffd966',
-    LATAM: '#6aa84f',
-    APAC: '#cc0000'
-  };
-
   return (
-    <div className="space-y-8 p-8 bg-gray-50">
+    <div className="p-8 bg-gray-50 min-h-screen">
       <ChartCard title="Quarterly Revenue by Region (Millions USD)">
-        <LineChart data={dashboardData.revenueData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="quarter" />
-          <YAxis />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend />
-          {Object.keys(colors).map((region) => (
-            <Line
-              key={region}
-              type="monotone"
-              dataKey={region}
-              stroke={colors[region]}
-              strokeWidth={2}
-              dot={{ strokeWidth: 2 }}
-            />
-          ))}
-        </LineChart>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={dashboardData.revenueData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="quarter" />
+            <YAxis />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            {Object.keys(colors).map((region) => (
+              <Line
+                key={region}
+                type="monotone"
+                dataKey={region}
+                stroke={colors[region]}
+                strokeWidth={2}
+                dot={{ strokeWidth: 2 }}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
       </ChartCard>
 
       <ChartCard title="Paid Memberships by Region (Millions)">
-        <BarChart data={dashboardData.membershipData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="quarter" />
-          <YAxis />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend />
-          {Object.keys(colors).map((region) => (
-            <Bar
-              key={region}
-              dataKey={region}
-              fill={colors[region]}
-            />
-          ))}
-        </BarChart>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={dashboardData.membershipData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="quarter" />
+            <YAxis />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            {Object.keys(colors).map((region) => (
+              <Bar
+                key={region}
+                dataKey={region}
+                fill={colors[region]}
+              />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
       </ChartCard>
 
       <ChartCard title="Average Revenue per Membership (USD)">
-        <LineChart data={dashboardData.arpmData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="quarter" />
-          <YAxis />
-          <Tooltip content={<CustomTooltip />} />
-          <Legend />
-          {Object.keys(colors).map((region) => (
-            <Line
-              key={region}
-              type="monotone"
-              dataKey={region}
-              stroke={colors[region]}
-              strokeWidth={2}
-              dot={{ strokeWidth: 2 }}
-            />
-          ))}
-        </LineChart>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={dashboardData.arpmData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="quarter" />
+            <YAxis />
+            <Tooltip content={<CustomTooltip />} />
+            <Legend />
+            {Object.keys(colors).map((region) => (
+              <Line
+                key={region}
+                type="monotone"
+                dataKey={region}
+                stroke={colors[region]}
+                strokeWidth={2}
+                dot={{ strokeWidth: 2 }}
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
       </ChartCard>
     </div>
   );
