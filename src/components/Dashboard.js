@@ -1,34 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const Dashboard = () => {
-  const [data, setData] = useState([]);
+// Reusable ChartCard component
+const ChartCard = ({ title, children }) => (
+  <div className="p-6 bg-white rounded-lg shadow-lg">
+    <h2 className="text-2xl font-bold mb-6 text-gray-900">{title}</h2>
+    <div className="h-72">
+      <ResponsiveContainer width="100%" height="100%">
+        {children}
+      </ResponsiveContainer>
+    </div>
+  </div>
+);
+
+const RegionalDashboard = () => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Color palette
+  const colors = {
+    background: '#FFFFFF',
+    text: '#333333',
+    chart: {
+      UCAN: '#073763',
+      EMEA: '#ffd966',
+      LATAM: '#6aa84f',
+      APAC: '#cc0000'
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const result = await axios.get('https://raw.githubusercontent.com/bethCoderNewbie/beth_region_su/main/src/data/data.json');
         setData(result.data);
+        setError(null);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError("Failed to load dashboard data. Please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, []);
 
-  const RegionalDashboard = () => {
-  // Final color palette
-  const colors = {
-    background: '#FFFFFF',  // White Background
-    text: '#333333',       // Dark Text
-    chart: {
-      UCAN: '#073763',     // Deep Blue
-      EMEA: '#ffd966',     // Gold
-      LATAM: '#6aa84f',    // Green
-      APAC: '#cc0000'      // Red
-    }
-  };
-    
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -48,124 +66,95 @@ const Dashboard = () => {
     return null;
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-xl font-semibold">Loading dashboard data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-xl font-semibold text-red-600">{error}</div>
+      </div>
+    );
+  }
+
+  // Helper function to create Line components
+  const createLines = () => {
+    return Object.keys(colors.chart).map((region) => (
+      <Line
+        key={region}
+        type="monotone"
+        dataKey={region}
+        stroke={colors.chart[region]}
+        strokeWidth={3}
+        dot={{ strokeWidth: 2 }}
+      />
+    ));
+  };
+
+  // Helper function to create Bar components
+  const createBars = () => {
+    return Object.keys(colors.chart).map((region) => (
+      <Bar
+        key={region}
+        dataKey={region}
+        fill={colors.chart[region]}
+      />
+    ));
+  };
+
+  if (!data) return null;
+
   return (
     <div className="space-y-8 bg-gray-50 p-8">
-      <div className="p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-900">Quarterly Revenue by Region (Millions USD)</h2>
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={revenueData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-              <XAxis dataKey="quarter" stroke="#4a5568" />
-              <YAxis stroke="#4a5568" />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend 
-                wrapperStyle={{
-                  paddingTop: '20px'
-                }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="UCAN" 
-                stroke={colors.chart.UCAN} 
-                strokeWidth={3}
-                dot={{ strokeWidth: 2 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="EMEA" 
-                stroke={colors.chart.EMEA} 
-                strokeWidth={3}
-                dot={{ strokeWidth: 2 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="LATAM" 
-                stroke={colors.chart.LATAM} 
-                strokeWidth={3}
-                dot={{ strokeWidth: 2 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="APAC" 
-                stroke={colors.chart.APAC} 
-                strokeWidth={3}
-                dot={{ strokeWidth: 2 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <ChartCard title="Quarterly Revenue by Region (Millions USD)">
+        <LineChart data={data.revenueData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+          <XAxis dataKey="quarter" stroke="#4a5568" />
+          <YAxis stroke="#4a5568" />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            wrapperStyle={{
+              paddingTop: '20px'
+            }}
+          />
+          {createLines()}
+        </LineChart>
+      </ChartCard>
 
-      <div className="p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-900">Paid Memberships by Region (Millions)</h2>
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={membershipData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-              <XAxis dataKey="quarter" stroke="#4a5568" />
-              <YAxis stroke="#4a5568" />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend 
-                wrapperStyle={{
-                  paddingTop: '20px'
-                }}
-              />
-              <Bar dataKey="UCAN" fill={colors.chart.UCAN} />
-              <Bar dataKey="EMEA" fill={colors.chart.EMEA} />
-              <Bar dataKey="LATAM" fill={colors.chart.LATAM} />
-              <Bar dataKey="APAC" fill={colors.chart.APAC} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <ChartCard title="Paid Memberships by Region (Millions)">
+        <BarChart data={data.membershipData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+          <XAxis dataKey="quarter" stroke="#4a5568" />
+          <YAxis stroke="#4a5568" />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            wrapperStyle={{
+              paddingTop: '20px'
+            }}
+          />
+          {createBars()}
+        </BarChart>
+      </ChartCard>
 
-      <div className="p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-900">Average Revenue per Membership (USD)</h2>
-        <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={arpmData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-              <XAxis dataKey="quarter" stroke="#4a5568" />
-              <YAxis stroke="#4a5568" />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend 
-                wrapperStyle={{
-                  paddingTop: '20px'
-                }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="UCAN" 
-                stroke={colors.chart.UCAN} 
-                strokeWidth={3}
-                dot={{ strokeWidth: 2 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="EMEA" 
-                stroke={colors.chart.EMEA} 
-                strokeWidth={3}
-                dot={{ strokeWidth: 2 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="LATAM" 
-                stroke={colors.chart.LATAM} 
-                strokeWidth={3}
-                dot={{ strokeWidth: 2 }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="APAC" 
-                stroke={colors.chart.APAC} 
-                strokeWidth={3}
-                dot={{ strokeWidth: 2 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      <ChartCard title="Average Revenue per Membership (USD)">
+        <LineChart data={data.arpmData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+          <XAxis dataKey="quarter" stroke="#4a5568" />
+          <YAxis stroke="#4a5568" />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend
+            wrapperStyle={{
+              paddingTop: '20px'
+            }}
+          />
+          {createLines()}
+        </LineChart>
+      </ChartCard>
     </div>
   );
 };
