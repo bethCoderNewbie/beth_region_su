@@ -15,9 +15,83 @@ const ChartCard = ({ title, children }) => (
 );
 
 const RegionalDashboard = () => {
-  const [data, setData] = useState(null);
+  // Static data as fallback
+  const staticData = {
+    revenueData: [
+      {
+        quarter: 'Q1\'24',
+        UCAN: 4224,
+        EMEA: 2958,
+        LATAM: 1165,
+        APAC: 1023,
+      },
+      {
+        quarter: 'Q2\'24',
+        UCAN: 4296,
+        EMEA: 3008,
+        LATAM: 1204,
+        APAC: 1052,
+      },
+      {
+        quarter: 'Q3\'24',
+        UCAN: 4322,
+        EMEA: 3133,
+        LATAM: 1241,
+        APAC: 1128,
+      },
+    ],
+    membershipData: [
+      {
+        quarter: 'Q1\'24',
+        UCAN: 82.66,
+        EMEA: 91.73,
+        LATAM: 47.72,
+        APAC: 47.50,
+      },
+      {
+        quarter: 'Q2\'24',
+        UCAN: 84.11,
+        EMEA: 93.96,
+        LATAM: 49.25,
+        APAC: 50.32,
+      },
+      {
+        quarter: 'Q3\'24',
+        UCAN: 84.80,
+        EMEA: 96.13,
+        LATAM: 49.18,
+        APAC: 52.60,
+      },
+    ],
+    arpmData: [
+      {
+        quarter: 'Q1\'24',
+        UCAN: 17.30,
+        EMEA: 10.92,
+        LATAM: 8.29,
+        APAC: 7.35,
+      },
+      {
+        quarter: 'Q2\'24',
+        UCAN: 17.17,
+        EMEA: 10.80,
+        LATAM: 8.28,
+        APAC: 7.17,
+      },
+      {
+        quarter: 'Q3\'24',
+        UCAN: 17.06,
+        EMEA: 10.99,
+        LATAM: 8.40,
+        APAC: 7.31,
+      },
+    ]
+  };
+
+  const [data, setData] = useState(staticData);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [useStaticData, setUseStaticData] = useState(false);
 
   // Color palette
   const colors = {
@@ -35,15 +109,24 @@ const RegionalDashboard = () => {
     const fetchData = async () => {
       try {
         const result = await axios.get('https://raw.githubusercontent.com/bethCoderNewbie/beth_region_su/main/src/data/data.json');
-        setData(result.data);
+        if (result.data) {
+          setData(result.data);
+          setUseStaticData(false);
+        } else {
+          setData(staticData);
+          setUseStaticData(true);
+        }
         setError(null);
       } catch (error) {
         console.error("Error fetching data:", error);
-        setError("Failed to load dashboard data. Please try again later.");
+        setError("Using local data due to API error.");
+        setData(staticData);
+        setUseStaticData(true);
       } finally {
         setLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
@@ -65,22 +148,6 @@ const RegionalDashboard = () => {
     }
     return null;
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl font-semibold">Loading dashboard data...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl font-semibold text-red-600">{error}</div>
-      </div>
-    );
-  }
 
   // Helper function to create Line components
   const createLines = () => {
@@ -107,10 +174,42 @@ const RegionalDashboard = () => {
     ));
   };
 
-  if (!data) return null;
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-xl font-semibold">Loading dashboard data...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-8 bg-gray-50 p-8">
+        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <span className="text-yellow-400">⚠️</span>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-yellow-700">{error}</p>
+            </div>
+          </div>
+        </div>
+        {/* Continue rendering dashboard with static data */}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 bg-gray-50 p-8">
+      {useStaticData && (
+        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+          <p className="text-sm text-blue-700">
+            Using local data. Connect to API for real-time updates.
+          </p>
+        </div>
+      )}
+
       <ChartCard title="Quarterly Revenue by Region (Millions USD)">
         <LineChart data={data.revenueData}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
