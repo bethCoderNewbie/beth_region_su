@@ -7,7 +7,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get('https://raw.githubusercontent.com/bethCoderNewbie/netflix-finratio-dashboard/main/src/data/financialData.json');
+        const result = await axios.get('https://raw.githubusercontent.com/bethCoderNewbie/beth_region_su/main/src/data/data.json');
         setData(result.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -16,6 +16,19 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  const RegionalDashboard = () => {
+  // Final color palette
+  const colors = {
+    background: '#FFFFFF',  // White Background
+    text: '#333333',       // Dark Text
+    chart: {
+      UCAN: '#073763',     // Deep Blue
+      EMEA: '#ffd966',     // Gold
+      LATAM: '#6aa84f',    // Green
+      APAC: '#cc0000'      // Red
+    }
+  };
+    
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
