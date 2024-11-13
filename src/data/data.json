@@ -1,4 +1,4 @@
-  const revenueData = [
+[
     {
       quarter: 'Q1\'24',
       UCAN: 4224,
