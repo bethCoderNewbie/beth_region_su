@@ -2,74 +2,32 @@ import React from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const dashboardData = {
-  "revenueData": [
-    {
-      "quarter": "Q1'24",
-      "UCAN": 4224,
-      "EMEA": 2958,
-      "LATAM": 1165,
-      "APAC": 1023
-    },
-    {
-      "quarter": "Q2'24",
-      "UCAN": 4296,
-      "EMEA": 3008,
-      "LATAM": 1204,
-      "APAC": 1052
-    },
-    {
-      "quarter": "Q3'24",
-      "UCAN": 4322,
-      "EMEA": 3133,
-      "LATAM": 1241,
-      "APAC": 1128
-    }
+  revenueData: [
+    { quarter: "Q1'23", UCAN: 1204.19, EMEA: 842.56, LATAM: 354.75, APAC: 317.12 },
+    { quarter: "Q2'23", UCAN: 1209.12, EMEA: 867.63, LATAM: 364.39, APAC: 310.61 },
+    { quarter: "Q3'23", UCAN: 1259.64, EMEA: 919.68, LATAM: 386.30, APAC: 323.32 },
+    { quarter: "Q4'23", UCAN: 1333.36, EMEA: 954.71, LATAM: 395.60, APAC: 331.43 },
+    { quarter: "Q1'24", UCAN: 1430.02, EMEA: 1001.69, LATAM: 395.60, APAC: 349.13 },
+    { quarter: "Q2'24", UCAN: 1444.17, EMEA: 1014.77, LATAM: 407.79, APAC: 360.79 },
+    { quarter: "Q3'24", UCAN: 1446.69, EMEA: 1056.47, LATAM: 413.11, APAC: 384.51 }
   ],
-  "membershipData": [
-    {
-      "quarter": "Q1'24",
-      "UCAN": 82.66,
-      "EMEA": 91.73,
-      "LATAM": 47.72,
-      "APAC": 47.50
-    },
-    {
-      "quarter": "Q2'24",
-      "UCAN": 84.11,
-      "EMEA": 93.96,
-      "LATAM": 49.25,
-      "APAC": 50.32
-    },
-    {
-      "quarter": "Q3'24",
-      "UCAN": 84.80,
-      "EMEA": 96.13,
-      "LATAM": 49.18,
-      "APAC": 52.60
-    }
+  membershipData: [
+    { quarter: "Q1'23", UCAN: 74.40, EMEA: 77.37, LATAM: 41.25, APAC: 39.48 },
+    { quarter: "Q2'23", UCAN: 75.57, EMEA: 79.81, LATAM: 42.47, APAC: 40.55 },
+    { quarter: "Q3'23", UCAN: 77.32, EMEA: 83.76, LATAM: 43.65, APAC: 42.43 },
+    { quarter: "Q4'23", UCAN: 80.13, EMEA: 88.81, LATAM: 46.00, APAC: 45.34 },
+    { quarter: "Q1'24", UCAN: 82.66, EMEA: 91.73, LATAM: 47.72, APAC: 47.50 },
+    { quarter: "Q2'24", UCAN: 84.11, EMEA: 93.96, LATAM: 49.25, APAC: 50.32 },
+    { quarter: "Q3'24", UCAN: 84.80, EMEA: 96.13, LATAM: 49.18, APAC: 52.60 }
   ],
-  "arpmData": [
-    {
-      "quarter": "Q1'24",
-      "UCAN": 17.30,
-      "EMEA": 10.92,
-      "LATAM": 8.29,
-      "APAC": 7.35
-    },
-    {
-      "quarter": "Q2'24",
-      "UCAN": 17.17,
-      "EMEA": 10.80,
-      "LATAM": 8.28,
-      "APAC": 7.17
-    },
-    {
-      "quarter": "Q3'24",
-      "UCAN": 17.06,
-      "EMEA": 10.99,
-      "LATAM": 8.40,
-      "APAC": 7.31
-    }
+  arpmData: [
+    { quarter: "Q1'23", UCAN: 16.18, EMEA: 10.89, LATAM: 8.60, APAC: 8.03 },
+    { quarter: "Q2'23", UCAN: 16.00, EMEA: 10.87, LATAM: 8.58, APAC: 7.66 },
+    { quarter: "Q3'23", UCAN: 16.29, EMEA: 10.98, LATAM: 8.85, APAC: 7.62 },
+    { quarter: "Q4'23", UCAN: 16.64, EMEA: 10.75, LATAM: 8.60, APAC: 7.31 },
+    { quarter: "Q1'24", UCAN: 17.30, EMEA: 10.92, LATAM: 8.29, APAC: 7.35 },
+    { quarter: "Q2'24", UCAN: 17.17, EMEA: 10.80, LATAM: 8.28, APAC: 7.17 },
+    { quarter: "Q3'24", UCAN: 17.06, EMEA: 10.99, LATAM: 8.40, APAC: 7.31 }
   ]
 };
 
